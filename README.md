@@ -57,6 +57,7 @@
     ]
   }
   ```
+
 ## Update Note
 
 - URL : `localhost:8000/api/v1/notes?id={id}`
@@ -74,5 +75,18 @@
     "code": 200,
     "status": "Success",
     "message": "Note Baru Berhasil Ditambahkan"
+  }
+  ```
+
+## Delete Note
+
+- URL : `localhost:8000/api/v1/notes?id={id}`
+- Method : `DELETE`
+- Response
+  ```json
+  {
+    "code": 200,
+    "status": "Success",
+    "message": "Note Berhasil Dihapus"
   }
   ```
