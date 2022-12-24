@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -30,7 +31,7 @@ func write(w http.ResponseWriter, code int, message string, status string, data 
 		Code:    code,
 		Message: message,
 		Status:  status,
-		Data: data,
+		Data:    data,
 	}
 	resp, _ := json.Marshal(response)
 	w.Header().Set("Content-Type", "application/json")
@@ -52,7 +53,7 @@ func main() {
 		if r.Method == http.MethodPost {
 			// Create Note
 			rBody, err := io.ReadAll(r.Body)
-			if err != nil{
+			if err != nil {
 				fmt.Println("error :", err)
 				write(w, http.StatusInternalServerError, "Sistem sedang sibuk", "error", nil)
 				return
@@ -80,8 +81,57 @@ func main() {
 			return
 		}
 
-		if r.Method == http.MethodGet{
+		if r.Method == http.MethodGet {
 			write(w, http.StatusOK, "Success get list notes", "Success", notes)
+			return
+		}
+
+		if r.Method == http.MethodGet {
+			write(w, http.StatusOK, "Success get list notes", "Success", notes)
+			return
+		}
+
+		if r.Method == http.MethodPut {
+
+			// get parameter dari url
+			pID := r.URL.Query().Get("id")
+			id, err := strconv.Atoi(pID)
+			if err != nil {
+				fmt.Println("error: ", err)
+				write(w, http.StatusBadRequest, "Salah parameter", "error", nil)
+				return
+			}
+
+			// Update Note
+			rBody, err := io.ReadAll(r.Body)
+			if err != nil {
+				fmt.Println("error :", err)
+				write(w, http.StatusInternalServerError, "Sistem sedang sibuk", "error", nil)
+				return
+			}
+
+			var note Note
+			err = json.Unmarshal(rBody, &note)
+			if err != nil {
+				fmt.Println("error :", err)
+				write(w, http.StatusInternalServerError, "Sistem sedang sibuk", "error", nil)
+				return
+			}
+
+			if note.Title == "" || note.Body == "" {
+				fmt.Println("error :", "title/body is null")
+				write(w, http.StatusBadRequest, "Salah input", "error", nil)
+				return
+			}
+
+			for i, oldNote := range notes {
+				if oldNote.ID == id {
+					notes[i].Title = note.Title
+					notes[i].Body = note.Body
+				}
+			}
+
+			write(w, http.StatusCreated, "Note Baru Berhasil Ditambahkan", "Success", nil)
 			return
 		}
 
