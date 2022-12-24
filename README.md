@@ -57,3 +57,22 @@
     ]
   }
   ```
+## Update Note
+
+- URL : `localhost:8000/api/v1/notes?id={id}`
+- Method : `PUT`
+- Request Body
+  ```json
+  {
+    "title": "Golang",
+    "body": "Golang adalah bahasa yang dibuat oleh google"
+  }
+  ```
+- Response
+  ```json
+  {
+    "code": 200,
+    "status": "Success",
+    "message": "Note Baru Berhasil Ditambahkan"
+  }
+  ```
